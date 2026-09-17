@@ -1,0 +1,37 @@
+name: Build Check
+
+# When this workflow runs: on every push to main, and on every pull request
+# targeting main. This is the trigger — no push, no run.
+on:
+  push:
+    branches: [ ahmed ]
+  pull_request:
+    branches: [ ahmed ]
+
+jobs:
+  build-api:
+    # GitHub provides this virtual machine fresh for every run —
+    # nothing persists between runs unless you explicitly cache it.
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: get your repo's code onto this virtual machine.
+      # Without this, there's nothing to build — the VM starts empty.
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: run the exact same docker build command you'd run locally.
+      # If this fails, the whole workflow fails, and GitHub shows a red X
+      # on your commit/PR.
+      - name: Build FastAPI image
+        run: docker build -f Dockerfile.api -t credit-risk-api .
+
+  build-streamlit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Streamlit image
+        run: docker build -f Dockerfile.streamlit -t credit-risk-streamlit .
