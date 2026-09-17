@@ -24,7 +24,7 @@ jobs:
       # If this fails, the whole workflow fails, and GitHub shows a red X
       # on your commit/PR.
       - name: Build FastAPI image
-        run: docker build -f Dockerfile.api -t credit-risk-api .
+        run: docker build -f dockerfile.api -t credit-risk-api .
 
   build-streamlit:
     runs-on: ubuntu-latest
@@ -34,4 +34,4 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build Streamlit image
-        run: docker build -f Dockerfile.streamlit -t credit-risk-streamlit .
+        run: docker build -f dockerfile.streamlit -t credit-risk-streamlit .
