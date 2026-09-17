@@ -1,0 +1,9 @@
+{
+    "low_risk_max": 0.1,
+    "medium_risk_max": 0.3,
+    "actions": {
+        "Low Risk": "Auto Approve",
+        "Medium Risk": "Manual Review",
+        "High Risk": "Reject / Extra Verification"
+    }
+}

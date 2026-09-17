@@ -1,11 +1,10 @@
 ﻿# Ignore datasets, intermediate files, and environment files
 Dataset/
-*.csv
 *.pkl
 .env
 
 # Ignore model-related artifacts
-artifacts/
+
 models/
 
 # Ignore IDE configuration
