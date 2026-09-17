@@ -1,0 +1,22 @@
+FROM python:3.13-slim
+
+WORKDIR /app
+
+# System library LightGBM needs at runtime — not always present on slim images
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python deps first, separately from app code.
+# Docker caches layers — if only your code changes (not requirements),
+# this step is skipped on rebuild, saving significant time.
+COPY requirements-api.txt .
+RUN pip install --no-cache-dir -r requirements-api.txt
+
+# Now copy the actual application code and inference-time artifacts
+COPY app/ ./app/
+COPY artifacts/ ./artifacts/
+
+EXPOSE 8000
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

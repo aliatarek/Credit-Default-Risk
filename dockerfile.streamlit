@@ -1,0 +1,15 @@
+FROM python:3.13-slim
+
+WORKDIR /app
+
+# Install Python deps first, separately from app code, for build-cache efficiency
+COPY requirements-streamlit.txt .
+RUN pip install --no-cache-dir -r requirements-streamlit.txt
+
+# App code and the data files it reads at runtime (test set for lookups)
+COPY streamlit_app.py .
+COPY streamlit_dataset/ ./Dataset/
+
+EXPOSE 8501
+
+CMD ["streamlit", "run", "streamlit_app.py", "--server.address=0.0.0.0", "--server.port=8501"]

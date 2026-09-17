@@ -1,0 +1,34 @@
+services:
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama # persists downloaded models across restarts
+
+  credit-api:
+    build:
+      context: .
+      dockerfile: dockerfile.api
+    container_name: credit-api
+    ports:
+      - "8000:8000"
+
+  credit-streamlit:
+    build:
+      context: .
+      dockerfile: dockerfile.streamlit
+    container_name: credit-streamlit
+    ports:
+      - "8501:8501"
+    environment:
+      - API_URL=http://credit-api:8000/predict
+      - OLLAMA_HOST=http://ollama:11434
+    depends_on:
+      - credit-api
+      - ollama
+
+volumes:
+  ollama_data:
