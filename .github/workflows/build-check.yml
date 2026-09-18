@@ -4,27 +4,46 @@ name: Build Check
 # targeting main. This is the trigger — no push, no run.
 on:
   push:
-    branches: [ ahmed ]
+    branches: [ main ]
   pull_request:
-    branches: [ ahmed ]
+    branches: [ main ]
 
 jobs:
   build-api:
-    # GitHub provides this virtual machine fresh for every run —
-    # nothing persists between runs unless you explicitly cache it.
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: get your repo's code onto this virtual machine.
-      # Without this, there's nothing to build — the VM starts empty.
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: run the exact same docker build command you'd run locally.
-      # If this fails, the whole workflow fails, and GitHub shows a red X
-      # on your commit/PR.
       - name: Build FastAPI image
         run: docker build -f dockerfile.api -t credit-risk-api .
+
+      # Actually start the container and hit /predict with a real payload,
+      # instead of just confirming the image builds.
+      - name: Run container
+        run: docker run -d -p 8000:8000 --name credit-api-test credit-risk-api
+
+      - name: Set up Python for the test script
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install test dependencies
+        run: pip install requests pandas
+
+      - name: Run API smoke test
+        run: python test_api.py
+
+      # Always print logs and clean up, even if the test above failed —
+      # this makes a failure much easier to debug from the Actions tab.
+      - name: Show container logs (on failure)
+        if: failure()
+        run: docker logs credit-api-test
+
+      - name: Stop container
+        if: always()
+        run: docker rm -f credit-api-test
 
   build-streamlit:
     runs-on: ubuntu-latest
