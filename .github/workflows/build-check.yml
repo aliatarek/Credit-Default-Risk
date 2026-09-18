@@ -4,9 +4,9 @@ name: Build Check
 # targeting main. This is the trigger — no push, no run.
 on:
   push:
-    branches: [ main ]
+    branches: [ ahmed ]
   pull_request:
-    branches: [ main ]
+    branches: [ ahmed ]
 
 jobs:
   build-api:
