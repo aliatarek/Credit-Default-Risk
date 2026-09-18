@@ -17,7 +17,7 @@ import requests
 
 API_URL = "http://localhost:8000/predict"
 HEALTH_URL = "http://localhost:8000/health"
-DATA_PATH = "Dataset/x_test_raw_with_id.csv"
+DATA_PATH = "streamlit_dataset/x_test_raw_with_id.csv"
 
 REQUIRED_RESPONSE_FIELDS = {"probability", "risk_category", "action", "shap_explanation"}
 VALID_RISK_CATEGORIES = {"Low Risk", "Medium Risk", "High Risk"}
