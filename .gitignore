@@ -1,6 +1,7 @@
 ﻿# Ignore datasets, intermediate files, and environment files
 Dataset/
 *.pkl
+!artifacts/*.pkl
 .env
 
 # Ignore model-related artifacts
